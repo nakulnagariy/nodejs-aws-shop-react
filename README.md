@@ -36,3 +36,8 @@ Runs tests in console, in browser or with coverage.
 ### `lint`, `prettier`
 
 Runs linting and formatting for all files in `src` folder.
+
+## Deployment
+
+- **CloudFront URL**: https://d2f3ezb02121uu.cloudfront.net/
+- **S3 Website URL**: http://nodejs-shop-shop-react-bucket.s3-website.ap-south-1.amazonaws.com (returns 403 — access restricted to CloudFront only)
