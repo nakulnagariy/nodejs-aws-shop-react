@@ -1,17 +1,59 @@
-// import * as cdk from 'aws-cdk-lib/core';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as Infra from '../lib/infra-stack';
+import * as cdk from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
+import { InfraStack } from '../lib/infra-stack';
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/infra-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new Infra.InfraStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+let template: Template;
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+beforeAll(() => {
+  const app = new cdk.App();
+  const stack = new InfraStack(app, 'TestStack');
+  template = Template.fromStack(stack);
+});
+
+test('S3 bucket is created with public access blocked', () => {
+  template.hasResourceProperties('AWS::S3::Bucket', {
+    PublicAccessBlockConfiguration: {
+      BlockPublicAcls: true,
+      BlockPublicPolicy: true,
+      IgnorePublicAcls: true,
+      RestrictPublicBuckets: true,
+    },
+  });
+});
+
+test('CloudFront distribution uses PRICE_CLASS_100', () => {
+  template.hasResourceProperties('AWS::CloudFront::Distribution', {
+    DistributionConfig: {
+      PriceClass: 'PriceClass_100',
+    },
+  });
+});
+
+test('CloudFront distribution redirects HTTP to HTTPS', () => {
+  template.hasResourceProperties('AWS::CloudFront::Distribution', {
+    DistributionConfig: {
+      DefaultCacheBehavior: {
+        ViewerProtocolPolicy: 'redirect-to-https',
+      },
+    },
+  });
+});
+
+test('CloudFront handles 403 and 404 errors by serving index.html', () => {
+  template.hasResourceProperties('AWS::CloudFront::Distribution', {
+    DistributionConfig: {
+      CustomErrorResponses: [
+        { ErrorCode: 403, ResponseCode: 200, ResponsePagePath: '/index.html' },
+        { ErrorCode: 404, ResponseCode: 200, ResponsePagePath: '/index.html' },
+      ],
+    },
+  });
+});
+
+test('CloudFrontURL output is defined', () => {
+  template.hasOutput('CloudFrontURL', {});
+});
+
+test('BucketName output is defined', () => {
+  template.hasOutput('BucketName', {});
 });

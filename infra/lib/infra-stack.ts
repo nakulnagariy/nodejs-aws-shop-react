@@ -24,6 +24,7 @@ export class InfraStack extends cdk.Stack {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
       defaultRootObject: 'index.html',
+      priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       errorResponses: [
         {
           httpStatus: 403,
