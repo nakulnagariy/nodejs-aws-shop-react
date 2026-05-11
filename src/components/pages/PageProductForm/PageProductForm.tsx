@@ -52,7 +52,7 @@ export default function PageProductForm() {
           validationSchema={AvailableProductSchema}
           onSubmit={onSubmit}
         >
-          {({ dirty, isSubmitting }: FormikProps<AvailableProduct>) => (
+          {({ dirty, isSubmitting, isValid }: FormikProps<AvailableProduct>) => (
             <Form autoComplete="off">
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -81,6 +81,8 @@ export default function PageProductForm() {
                     component={TextField}
                     name="price"
                     label="Price ($)"
+                    type="number"
+                    inputProps={{ min: 1 }}
                     fullWidth
                     autoComplete="off"
                     required
@@ -91,6 +93,8 @@ export default function PageProductForm() {
                     component={TextField}
                     name="count"
                     label="Count"
+                    type="number"
+                    inputProps={{ min: 0 }}
                     fullWidth
                     autoComplete="off"
                     required
@@ -107,7 +111,7 @@ export default function PageProductForm() {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    disabled={!dirty || isSubmitting}
+                    disabled={!dirty || isSubmitting || !isValid}
                   >
                     Save Product
                   </Button>
