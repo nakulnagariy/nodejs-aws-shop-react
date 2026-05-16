@@ -36,3 +36,20 @@ Runs tests in console, in browser or with coverage.
 ### `lint`, `prettier`
 
 Runs linting and formatting for all files in `src` folder.
+
+## Deployment
+
+- **CloudFront URL**: https://d210q4k0hjuddv.cloudfront.net
+- **S3 Website URL**: http://infrastack-shopbucket86a369b0-dmehihernmmc.s3-website.ap-south-1.amazonaws.com (returns 403 — access restricted to CloudFront only)
+
+### Deploy
+
+```bash
+npm run deploy
+```
+
+### Destroy
+
+```bash
+npm run destroy
+```
