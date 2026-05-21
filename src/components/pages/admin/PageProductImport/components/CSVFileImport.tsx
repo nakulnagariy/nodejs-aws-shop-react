@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import axios from "axios";
 
 type CSVFileImportProps = {
   url: string;
@@ -23,24 +24,30 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   };
 
   const uploadFile = async () => {
+    if (!file) return;
+
     console.log("uploadFile to", url);
 
-    // Get the presigned URL
-    // const response = await axios({
-    //   method: "GET",
-    //   url,
-    //   params: {
-    //     name: encodeURIComponent(file.name),
-    //   },
-    // });
-    // console.log("File to upload: ", file.name);
-    // console.log("Uploading to: ", response.data);
-    // const result = await fetch(response.data, {
-    //   method: "PUT",
-    //   body: file,
-    // });
-    // console.log("Result: ", result);
-    // setFile("");
+    // Step 1: Get the presigned URL from the import API
+    const response = await axios.get<string>(url, {
+      params: { name: file.name },
+    });
+
+    const presignedUrl = response.data;
+    console.log("File to upload: ", file.name);
+    console.log("Uploading to presigned URL: ", presignedUrl);
+
+    // Step 2: PUT the file directly to S3 using the presigned URL
+    await fetch(presignedUrl, {
+      method: "PUT",
+      body: file,
+      headers: {
+        "Content-Type": "text/csv",
+      },
+    });
+
+    console.log("Upload complete");
+    setFile(undefined);
   };
   return (
     <Box>
