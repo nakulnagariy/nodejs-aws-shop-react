@@ -48,9 +48,14 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
       setStatus("getting-presigned-url");
       setErrorMessage("");
 
+      const authorizationToken = localStorage.getItem("authorization_token");
+
       // Step 1: Get the presigned URL from the import API.
       const response = await axios.get<string>(url, {
         params: { name: file.name },
+        headers: authorizationToken
+          ? { Authorization: `Basic ${authorizationToken}` }
+          : {},
       });
 
       const presignedUrl = response.data;
