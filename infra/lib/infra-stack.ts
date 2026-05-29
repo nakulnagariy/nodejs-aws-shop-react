@@ -10,6 +10,10 @@ export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    const cloudFrontWebAclId = this.node.tryGetContext('cloudFrontWebAclId');
+    const cloudFrontFreePricingPlan =
+      this.node.tryGetContext('cloudFrontFreePricingPlan') === true;
+
     // S3 bucket - private, no public access
     const siteBucket = new s3.Bucket(this, 'ShopBucket', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -24,7 +28,10 @@ export class InfraStack extends cdk.Stack {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
       defaultRootObject: 'index.html',
-      priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
+      priceClass: cloudFrontFreePricingPlan
+        ? undefined
+        : cloudfront.PriceClass.PRICE_CLASS_100,
+      webAclId: cloudFrontWebAclId,
       errorResponses: [
         {
           httpStatus: 403,

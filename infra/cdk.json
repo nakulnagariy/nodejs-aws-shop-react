@@ -17,6 +17,8 @@
     ]
   },
   "context": {
+    "cloudFrontFreePricingPlan": true,
+    "cloudFrontWebAclId": "arn:aws:wafv2:us-east-1:448049827918:global/webacl/CreatedByCloudFront-378bfd6b/c4ba6351-6f1e-4d8b-af3f-fde72cab5d67",
     "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": true,
     "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": true,
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
